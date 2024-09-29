@@ -85,19 +85,25 @@ def read(id):
 def create(member):
     with sqlite3.connect('flask_ex.db') as conn:
         cur = conn.cursor()
-        cur.execute('''
-            INSERT INTO members (
-                "first_name", 
-                "last_name", 
-                "birth_date", 
-                "gender", 
-                "email", 
-                "phonenumber", 
-                "address", 
-                "nationality", 
-                "active", 
-                "github_username") 
-                VALUES (:first_name,:last_name,:birth_date,:gender,:email,:phonenumber, :address,:nationality,:active,:github_username)''', member)
+
+        cur.execute("SELECT * FROM members WHERE id = ?", id)
+        row = cur.fetchone()
+        if row:
+            cur.execute('''
+                INSERT INTO members (
+                    "first_name", 
+                    "last_name", 
+                    "birth_date", 
+                    "gender", 
+                    "email", 
+                    "phonenumber", 
+                    "address", 
+                    "nationality", 
+                    "active", 
+                    "github_username") 
+                    VALUES (:first_name,:last_name,:birth_date,:gender,:email,:phonenumber, :address,:nationality,:active,:github_username)''', member)
+        else:
+            return None
         
         new_student_id = cur.lastrowid
 
@@ -110,7 +116,7 @@ def update(id, member):
     with sqlite3.connect('flask_ex.db') as conn:
         cur = conn.cursor()
         cur.execute('''
-            UPDATE students SET
+            UPDATE members SET
                 "first_name" = :first_name,
                 "last_name" = :last_name,
                 "birth_date" = :birth_date,
@@ -125,6 +131,7 @@ def update(id, member):
         ''', (member, id))
 
         conn.commit()
+
 
 def delete(id):
     with sqlite3.connect('flask_ex.db') as conn:

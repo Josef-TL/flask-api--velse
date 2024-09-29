@@ -40,7 +40,18 @@ def create_member():
 
     return response
 
+@app.route('members/<int:id>', methods=['PUT'])
+def update_member(id):
+    member = request.get_json()
+    database.update(id, member)
 
+    return jsonify(), 204
+
+@app.route('members/<int:id>', methods=['DELETE'])
+def delete_member(id):
+    database.delete(id)
+
+    return jsonify(), 204
 
 if __name__ == '__main__':
     app.run(debug=True)
