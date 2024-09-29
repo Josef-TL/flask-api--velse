@@ -1,8 +1,6 @@
 import  sqlite3
 import database
-from flask import Flask, request, jsonify
-
-
+from flask import Flask, request, jsonify, make_response
 
 
 app = Flask(__name__)
@@ -24,28 +22,23 @@ def get_members():
 
 # Get one
 @app.route('/members/<int:id>')
-def get_member(member_id):
-    con = sqlite3.connect("flask_ex.db")
-    cur = con.cursor()
-    cur.execute("SELECT * FROM members WHERE rowid = ?",(member_id))
-    member = cur.fetchall()
-    
-    con.close()
-    
-    return jsonify(member)
+def get_member(id):
+    res = database.read(id)
 
-@app.route('/api/members/create', methods=['POST'])
+    if not res:
+        return jsonify(message="Member not found"), 404
+
+    return jsonify(res), 200
+
+@app.route('members', methods=['POST'])
 def create_member():
     
     new_member = request.get_json()
+    id = database.create(new_member)
+    response = make_response(jsonify(success=True, message="Resource created"), 201)
+    response.headers['Location'] = f'/students/{id}'
 
-
-    conn = sqlite3.connect('flask_ex.db')
-    c = conn.cursor()
-    c.execute("INSERT INTO members VALUES(?,?,?,?,?,?,?,?,?,?,?)", tuple(new_member.values()))
-    conn.commit()
-
-    return jsonify(new_member), 201
+    return response
 
 
 
