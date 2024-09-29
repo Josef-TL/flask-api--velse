@@ -1,11 +1,14 @@
-import data_dict
 import  sqlite3
-from flask import Flask, request, jsonify, g
+import database
+from flask import Flask, request, jsonify
+
 
 
 
 app = Flask(__name__)
 
+
+database.init()
 
 
 @app.route('/')
@@ -15,14 +18,9 @@ def index():
 # Get all
 @app.route('/members')
 def get_members():
-    con = sqlite3.connect("flask_ex.db")
-    cur = con.cursor()
-    cur.execute("SELECT * FROM members")
-    members = cur.fetchall()
-    
-    con.close()
+    res = database.read_all()
 
-    return jsonify(members)
+    return jsonify(res), 200
 
 # Get one
 @app.route('/members/<int:id>')
