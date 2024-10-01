@@ -1,5 +1,6 @@
 import os
 import database
+import github_service as gs
 from flask import Flask, request, jsonify, make_response, render_template
 
 
@@ -30,15 +31,34 @@ def get_member(id):
 
     return jsonify(res), 200
 
+
+# List Public repositories
+@app.route('/members/<id>/repos')
+def get_repos(id):
+    res = database.read(id)
+
+    if not res:
+        return jsonify(message="Member not found"), 404
+
+    username = res[0]['github_username']
+
+
+    # returns a list
+    return jsonify(gs.get_repo_list(username)), 200
+
+
+
+# Create new member
 @app.route('/members', methods=['POST'])
 def create_member():
     
     new_member = request.get_json()
     id = database.create(new_member)
     response = make_response(jsonify(success=True, message="Resource created"), 201)
-    response.headers['Location'] = f'/students/{id}'
+    response.headers['Location'] = f'/members/{id}'
 
     return response
+    #return new_member
 
 @app.route('/members/<int:id>', methods=['PUT'])
 def update_member(id):

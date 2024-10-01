@@ -37,7 +37,21 @@ def init():
                         "github_username")
                         VALUES (:first_name,:last_name,:birth_date,:gender,:email,:phonenumber,:address,:nationality,:active,:github_username)
                         ''', random_users)
+            cur.execute('''INSERT INTO members (
+                        "first_name" , 
+                        "last_name" , 
+                        "birth_date" , 
+                        "gender" , 
+                        "email" , 
+                        "phonenumber" , 
+                        "address" , 
+                        "nationality" ,
+                        "active",
+                        "github_username")
+                        VALUES ("Josef,"Lucas","blah","blah","blah","blah","blah","blah",1,"Josef-TL")
+                        ''')
             con.commit()
+
             
 def read_all():
     with sqlite3.connect('flask_ex.db') as con:
@@ -62,7 +76,7 @@ def read_all():
 def read(id):
     with sqlite3.connect('flask_ex.db') as con:
         cur = con.cursor()
-        cur.execute("SELECT * FROM members WHERE id = ?", id)
+        cur.execute("SELECT * FROM members WHERE id = ?", (id,))
         row = cur.fetchone()
 
         if row:
@@ -81,29 +95,28 @@ def read(id):
             return None
         
     return member
+
         
 def create(member):
     with sqlite3.connect('flask_ex.db') as conn:
+        
+    
         cur = conn.cursor()
-
-        cur.execute("SELECT * FROM members WHERE id = ?", id)
-        row = cur.fetchone()
-        if row:
-            cur.execute('''
-                INSERT INTO members (
-                    "first_name", 
-                    "last_name", 
-                    "birth_date", 
-                    "gender", 
-                    "email", 
-                    "phonenumber", 
-                    "address", 
-                    "nationality", 
-                    "active", 
-                    "github_username") 
-                    VALUES (:first_name,:last_name,:birth_date,:gender,:email,:phonenumber, :address,:nationality,:active,:github_username)''', member)
-        else:
-            return None
+       
+        cur.execute('''
+            INSERT INTO members (
+                "first_name", 
+                "last_name", 
+                "birth_date", 
+                "gender", 
+                "email", 
+                "phonenumber", 
+                "address", 
+                "nationality", 
+                "active", 
+                "github_username") 
+                VALUES (:first_name,:last_name,:birth_date,:gender,:email,:phonenumber, :address,:nationality,:active,:github_username)''', member[0])
+       
         
         new_student_id = cur.lastrowid
 
