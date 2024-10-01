@@ -1,6 +1,6 @@
-import  sqlite3
+import os
 import database
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response, render_template
 
 
 app = Flask(__name__)
@@ -11,7 +11,7 @@ database.init()
 
 @app.route('/')
 def index():
-    return "Hello, World!"
+    return render_template('index.html')
 
 # Get all
 @app.route('/members')
@@ -30,7 +30,7 @@ def get_member(id):
 
     return jsonify(res), 200
 
-@app.route('members', methods=['POST'])
+@app.route('/members', methods=['POST'])
 def create_member():
     
     new_member = request.get_json()
@@ -40,18 +40,19 @@ def create_member():
 
     return response
 
-@app.route('members/<int:id>', methods=['PUT'])
+@app.route('/members/<int:id>', methods=['PUT'])
 def update_member(id):
     member = request.get_json()
     database.update(id, member)
 
     return jsonify(), 204
 
-@app.route('members/<int:id>', methods=['DELETE'])
+@app.route('/members/<int:id>', methods=['DELETE'])
 def delete_member(id):
     database.delete(id)
 
     return jsonify(), 204
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=True,host='0.0.0.0',port=port)
