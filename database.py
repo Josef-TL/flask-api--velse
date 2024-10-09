@@ -1,8 +1,11 @@
 import sqlite3
+import os
 from data_dict import random_users
 
+db_path = os.getenv('DB_PATH')
+
 def init():
-    with sqlite3.connect("flask_ex.db") as con:
+    with sqlite3.connect(db_path) as con:
 
         cur = con.cursor()
 
@@ -54,7 +57,7 @@ def init():
 
             
 def read_all():
-    with sqlite3.connect('flask_ex.db') as con:
+    with sqlite3.connect(db_path) as con:
         cur = con.cursor()
         cur.execute("SELECT * FROM members")
         rows = cur.fetchall()
@@ -74,7 +77,7 @@ def read_all():
     return members
         
 def read(id):
-    with sqlite3.connect('flask_ex.db') as con:
+    with sqlite3.connect(db_path) as con:
         cur = con.cursor()
         cur.execute("SELECT * FROM members WHERE id = ?", (id,))
         row = cur.fetchone()
@@ -98,7 +101,7 @@ def read(id):
 
         
 def create(member):
-    with sqlite3.connect('flask_ex.db') as conn:
+    with sqlite3.connect(db_path) as conn:
         
     
         cur = conn.cursor()
@@ -126,7 +129,7 @@ def create(member):
 
 
 def update(id, member):
-    with sqlite3.connect('flask_ex.db') as conn:
+    with sqlite3.connect(db_path) as conn:
         cur = conn.cursor()
         cur.execute('''
             UPDATE members SET
@@ -147,7 +150,7 @@ def update(id, member):
 
 
 def delete(id):
-    with sqlite3.connect('flask_ex.db') as conn:
+    with sqlite3.connect(db_path) as conn:
         cur = conn.cursor()
         cur.execute("DELETE FROM students WHERE id= ?", id)
         conn.commit()

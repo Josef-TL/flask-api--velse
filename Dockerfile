@@ -10,4 +10,4 @@ EXPOSE 5000
 
 ENTRYPOINT [ "python" ]
 
-CMD ["flask_main.py"]
+CMD ["main.py"]
